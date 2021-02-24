@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"time"
 )
 
 func (l *State) arith(rb, rc value, op tm) value {
@@ -926,9 +927,7 @@ func init() {
 		},
 	}
 }
-func (l *State) Quit() {
-	l.quit = true
-}
+
 func (l *State) execute() { l.executeFunctionTable() }
 
 func (l *State) executeFunctionTable() {
@@ -944,8 +943,16 @@ func (l *State) executeFunctionTable() {
 	i := e.callInfo.step()
 	f := jumpTable[i.opCode()]
 	for f, i = f(&e, i); f != nil; f, i = f(&e, i) {
-		if l.quit {
+		switch l.signal {
+		case SIGNAL_QUIT:
 			return
+		case SIGNAL_PAUSE:
+			for true {
+				<-time.After(time.Millisecond * 500)
+				if l.signal == SIGNAL_RESUME {
+					break
+				}
+			}
 		}
 	}
 }

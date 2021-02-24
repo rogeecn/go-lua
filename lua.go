@@ -219,7 +219,7 @@ const (
 
 // A State is an opaque structure representing per thread Lua state.
 type State struct {
-	quit                  bool
+	signal                int
 	error                 error
 	shouldYield           bool
 	top                   int // first free slot in the stack
@@ -1530,3 +1530,13 @@ func (l *State) IsNoneOrNil(index int) bool { return l.TypeOf(index) <= TypeNil 
 //
 // http://www.lua.org/manual/5.2/manual.html#lua_pushglobaltable
 func (l *State) PushGlobalTable() { l.RawGetInt(RegistryIndex, RegistryIndexGlobals) }
+
+const (
+	SIGNAL_QUIT   = 1
+	SIGNAL_PAUSE  = 2
+	SIGNAL_RESUME = 0
+)
+
+func (l *State) Signal(sig int) {
+	l.signal = sig
+}
