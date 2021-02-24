@@ -219,6 +219,7 @@ const (
 
 // A State is an opaque structure representing per thread Lua state.
 type State struct {
+	quit                  bool
 	error                 error
 	shouldYield           bool
 	top                   int // first free slot in the stack
