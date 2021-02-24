@@ -945,7 +945,7 @@ func (l *State) executeFunctionTable() {
 	f := jumpTable[i.opCode()]
 	for f, i = f(&e, i); f != nil; f, i = f(&e, i) {
 		if l.quit {
-			f = nil
+			return
 		}
 	}
 }
